@@ -2,7 +2,8 @@
 name = "rust-norg"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
+authors = ["max397574", "n-shift"]
+description = "Neorg format parser"
+repository = "https://github.com/max397574/rust-norg"
+homepage = "https://github.com/max397574/rust-norg"
+keywords = ["neovim", "parser", "neorg"]
