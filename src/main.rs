@@ -3,5 +3,5 @@ mod tokenizer;
 
 fn main() {
     let x = tokenizer::tokenize("*Hello* {world}!");
-    println!("Output is {:#?}", x);
+    println!("Output is {x:#?}");
 }
