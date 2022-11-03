@@ -1,7 +1,7 @@
 use std::convert::From;
 
 #[derive(Debug, Eq, PartialEq)]
-pub enum SimpleTokenType {
+enum SimpleTokenType {
     Character,
     Space,
     Newline,
@@ -25,8 +25,8 @@ impl From<char> for SimpleTokenType {
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct SimpleToken {
-    pub token_type: SimpleTokenType,
-    pub char: char,
+    token_type: SimpleTokenType,
+    char: char,
 }
 
 impl SimpleToken {
