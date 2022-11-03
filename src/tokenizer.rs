@@ -46,59 +46,32 @@ pub fn tokenize(input: &str) -> Vec<SimpleToken> {
 mod tests {
     use super::*;
 
+    macro_rules! token {
+        ($token_type:ident, $char:expr) => {
+            SimpleToken {
+                token_type: SimpleTokenType::$token_type,
+                char: $char,
+            }
+        };
+    }
+
     #[test]
     fn validate_tokenizer() {
         assert_eq!(
             tokenize("*/_,-% \t\n{a}"),
             vec![
-                SimpleToken {
-                    token_type: SimpleTokenType::Special,
-                    char: '*'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Special,
-                    char: '/'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Special,
-                    char: '_'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Special,
-                    char: ','
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Special,
-                    char: '-'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Special,
-                    char: '%'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Space,
-                    char: ' '
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Space,
-                    char: '\t'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Newline,
-                    char: '\n'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::LinkOpen,
-                    char: '{'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::Character,
-                    char: 'a'
-                },
-                SimpleToken {
-                    token_type: SimpleTokenType::LinkClose,
-                    char: '}'
-                }
+                token!(Special, '*'),
+                token!(Special, '/'),
+                token!(Special, '_'),
+                token!(Special, ','),
+                token!(Special, '-'),
+                token!(Special, '%'),
+                token!(Space, ' '),
+                token!(Space, '\t'),
+                token!(Newline, '\n'),
+                token!(LinkOpen, '{'),
+                token!(Character, 'a'),
+                token!(LinkClose, '}'),
             ]
         );
     }
