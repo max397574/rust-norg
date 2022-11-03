@@ -39,9 +39,5 @@ impl SimpleToken {
 }
 
 pub fn tokenize(input: &str) -> Vec<SimpleToken> {
-    let mut tokens: Vec<SimpleToken> = Vec::new();
-    for input_char in input.chars() {
-        tokens.push(SimpleToken::new(input_char));
-    }
-    tokens
+    input.chars().map(SimpleToken::new).collect::<Vec<_>>()
 }
