@@ -47,7 +47,7 @@ enum AttachedModifierType {
 
 pub fn parse<I>(basic_tokens: I) -> Vec<ParsedToken>
 where
-    I: Iterator<Item = BasicToken>
+    I: Iterator<Item = BasicToken>,
 {
     let mut parsed_tokens: Vec<ParsedToken> = vec![];
     let mut basic_tokens = basic_tokens.peekable();
@@ -64,9 +64,9 @@ where
                             if next_token.token_type == BasicTokenType::Character {
                                 word.push(basic_tokens.next().unwrap().char);
                             } else {
-                                break
+                                break;
                             }
-                        },
+                        }
                         None => break,
                     }
                 }
@@ -87,11 +87,12 @@ mod tests {
 
     #[test]
     fn word() {
-        assert_eq!(parse(tokenize("hi")), vec![
-                   ParsedToken {
-                       range: [0,1],
-                       data: ParsedTokenData::Word("hi".into()),
-                   }
-        ]);
+        assert_eq!(
+            parse(tokenize("hi")),
+            vec![ParsedToken {
+                range: [0, 1],
+                data: ParsedTokenData::Word("hi".into()),
+            }]
+        );
     }
 }
