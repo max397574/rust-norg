@@ -38,8 +38,8 @@ impl SimpleToken {
     }
 }
 
-pub fn tokenize(input: &str) -> Vec<SimpleToken> {
-    input.chars().map(SimpleToken::new).collect::<Vec<_>>()
+pub fn tokenize(input: &str) -> impl Iterator<Item = SimpleToken> + '_ {
+    input.chars().map(SimpleToken::new)
 }
 
 #[cfg(test)]
@@ -57,22 +57,19 @@ mod tests {
 
     #[test]
     fn validate_tokenizer() {
-        assert_eq!(
-            tokenize("*/_,-% \t\n{a}"),
-            vec![
-                token!(Special, '*'),
-                token!(Special, '/'),
-                token!(Special, '_'),
-                token!(Special, ','),
-                token!(Special, '-'),
-                token!(Special, '%'),
-                token!(Space, ' '),
-                token!(Space, '\t'),
-                token!(Newline, '\n'),
-                token!(LinkOpen, '{'),
-                token!(Character, 'a'),
-                token!(LinkClose, '}'),
-            ]
-        );
+        let mut token_iterator = tokenize("*/_,-% \t\n{a}");
+        assert_eq!(token_iterator.next(), Some(token!(Special, '*')));
+        assert_eq!(token_iterator.next(), Some(token!(Special, '/')));
+        assert_eq!(token_iterator.next(), Some(token!(Special, '_')));
+        assert_eq!(token_iterator.next(), Some(token!(Special, ',')));
+        assert_eq!(token_iterator.next(), Some(token!(Special, '-')));
+        assert_eq!(token_iterator.next(), Some(token!(Special, '%')));
+        assert_eq!(token_iterator.next(), Some(token!(Space, ' ')));
+        assert_eq!(token_iterator.next(), Some(token!(Space, '\t')));
+        assert_eq!(token_iterator.next(), Some(token!(Newline, '\n')));
+        assert_eq!(token_iterator.next(), Some(token!(LinkOpen, '{')));
+        assert_eq!(token_iterator.next(), Some(token!(Character, 'a')));
+        assert_eq!(token_iterator.next(), Some(token!(LinkClose, '}')));
+        assert_eq!(token_iterator.next(), None);
     }
 }
