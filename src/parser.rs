@@ -1,9 +1,9 @@
-pub struct Token {
+pub struct ParsedToken {
     range: [u32; 2],
-    data: TokenData,
+    data: ParsedTokenData,
 }
 
-enum TokenData {
+enum ParsedTokenData {
     Word(String),
     Space(u32),
     SoftBreak,
@@ -24,7 +24,7 @@ enum LinkType {
 struct AttachedModifier {
     char: char,
     variant: AttachedModifierType,
-    content: Vec<Token>,
+    content: Vec<ParsedToken>,
 }
 
 enum AttachedModifierType {
@@ -37,6 +37,3 @@ enum AttachedModifierType {
     Comment,
 }
 
-pub fn parse(tokens: Vec<crate::tokenizer::SimpleToken>) -> Vec<Token> {
-    vec![]
-}

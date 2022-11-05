@@ -1,7 +1,7 @@
 use std::convert::From;
 
 #[derive(Debug, Eq, PartialEq)]
-enum SimpleTokenType {
+enum BasicTokenType {
     Character,
     Space,
     Newline,
@@ -10,7 +10,7 @@ enum SimpleTokenType {
     LinkClose,
 }
 
-impl From<char> for SimpleTokenType {
+impl From<char> for BasicTokenType {
     fn from(input_char: char) -> Self {
         match input_char {
             '\t' | ' ' => Self::Space,
@@ -24,12 +24,12 @@ impl From<char> for SimpleTokenType {
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub struct SimpleToken {
-    token_type: SimpleTokenType,
+pub struct BasicToken {
+    token_type: BasicTokenType,
     char: char,
 }
 
-impl SimpleToken {
+impl BasicToken {
     fn new(input_char: char) -> Self {
         Self {
             token_type: input_char.into(),
@@ -38,8 +38,8 @@ impl SimpleToken {
     }
 }
 
-pub fn tokenize(input: &str) -> impl Iterator<Item = SimpleToken> + '_ {
-    input.chars().map(SimpleToken::new)
+pub fn tokenize(input: &str) -> impl Iterator<Item = BasicToken> + '_ {
+    input.chars().map(BasicToken::new)
 }
 
 #[cfg(test)]
@@ -48,8 +48,8 @@ mod tests {
 
     macro_rules! token {
         ($token_type:ident, $char:expr) => {
-            SimpleToken {
-                token_type: SimpleTokenType::$token_type,
+            BasicToken {
+                token_type: BasicTokenType::$token_type,
                 char: $char,
             }
         };
