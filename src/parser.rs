@@ -29,7 +29,7 @@ enum ParsedTokenData {
     SoftBreak,
     ParagraphBreak,
     Link(Link),
-    AttachedModifier(AttachedModifier),
+    AttachedModifier(AttachedModifierType),
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -42,13 +42,6 @@ struct Link {
 #[derive(Debug, Eq, PartialEq)]
 enum LinkType {
     Url,
-}
-
-#[derive(Debug, Eq, PartialEq)]
-struct AttachedModifier {
-    char: char,
-    variant: AttachedModifierType,
-    content: Vec<ParsedToken>,
 }
 
 #[allow(dead_code)]
