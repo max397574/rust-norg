@@ -93,7 +93,9 @@ where
             }
             BasicTokenType::Space => {
                 let start_position = Position::new(line_counter, char_counter);
-                while let Some(_) = basic_tokens.next_if(|x| x.token_type == BasicTokenType::Space)
+                while basic_tokens
+                    .next_if(|x| x.token_type == BasicTokenType::Space)
+                    .is_some()
                 {
                     char_counter += 1;
                 }
