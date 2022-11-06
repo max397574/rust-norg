@@ -99,10 +99,10 @@ mod tests {
         assert_eq!(
             token_iter.next(),
             Some(parsed_token!(
-                    [0, 4],
-                    ParsedTokenData::Word(String::from("neorg"))
-                    ))
-            );
+                [0, 4],
+                ParsedTokenData::Word(String::from("neorg"))
+            ))
+        );
         assert_eq!(token_iter.next(), None);
     }
 }
