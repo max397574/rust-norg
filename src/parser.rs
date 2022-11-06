@@ -10,7 +10,7 @@ pub struct ParsedToken {
 #[derive(Debug, Eq, PartialEq)]
 enum ParsedTokenData {
     Word(String),
-    Space(u32),
+    Space,
     SoftBreak,
     ParagraphBreak,
     Link(Link),
@@ -70,7 +70,8 @@ where
                     range: [0, (word.len() - 1) as u32],
                     data: ParsedTokenData::Word(word),
                 })
-            }
+            },
+            BasicTokenType::Space => todo!(),
             _ => unimplemented!(),
         }
     }
