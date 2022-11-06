@@ -1,4 +1,4 @@
-use crate::tokenizer::{tokenize, BasicToken, BasicTokenType};
+use crate::tokenizer::{BasicToken, BasicTokenType};
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct ParsedToken {
@@ -6,6 +6,7 @@ pub struct ParsedToken {
     data: ParsedTokenData,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Eq, PartialEq)]
 enum ParsedTokenData {
     Word(String),
@@ -22,6 +23,7 @@ struct Link {
     content: String,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Eq, PartialEq)]
 enum LinkType {
     Url,
@@ -34,6 +36,7 @@ struct AttachedModifier {
     content: Vec<ParsedToken>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Eq, PartialEq)]
 enum AttachedModifierType {
     Bold,
@@ -84,15 +87,27 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::tokenizer::tokenize;
+
+    macro_rules! parsed_token {
+        ($range:expr, $data:expr) => {
+            ParsedToken {
+                range: $range,
+                data: $data,
+            }
+        };
+    }
 
     #[test]
     fn word() {
+        let mut token_iter = parse(tokenize("neorg")).into_iter();
         assert_eq!(
-            parse(tokenize("hi")),
-            vec![ParsedToken {
-                range: [0, 1],
-                data: ParsedTokenData::Word("hi".into()),
-            }]
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 4],
+                ParsedTokenData::Word(String::from("neorg"))
+            ))
         );
+        assert_eq!(token_iter.next(), None);
     }
 }

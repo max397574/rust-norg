@@ -46,7 +46,7 @@ pub fn tokenize(input: &str) -> impl Iterator<Item = BasicToken> + '_ {
 mod tests {
     use super::*;
 
-    macro_rules! token {
+    macro_rules! basic_token {
         ($token_type:ident, $char:expr) => {
             BasicToken {
                 token_type: BasicTokenType::$token_type,
@@ -58,18 +58,18 @@ mod tests {
     #[test]
     fn validate_tokenizer() {
         let mut token_iterator = tokenize("*/_,-% \t\n{a}");
-        assert_eq!(token_iterator.next(), Some(token!(Special, '*')));
-        assert_eq!(token_iterator.next(), Some(token!(Special, '/')));
-        assert_eq!(token_iterator.next(), Some(token!(Special, '_')));
-        assert_eq!(token_iterator.next(), Some(token!(Special, ',')));
-        assert_eq!(token_iterator.next(), Some(token!(Special, '-')));
-        assert_eq!(token_iterator.next(), Some(token!(Special, '%')));
-        assert_eq!(token_iterator.next(), Some(token!(Space, ' ')));
-        assert_eq!(token_iterator.next(), Some(token!(Space, '\t')));
-        assert_eq!(token_iterator.next(), Some(token!(LineBreak, '\n')));
-        assert_eq!(token_iterator.next(), Some(token!(LinkOpen, '{')));
-        assert_eq!(token_iterator.next(), Some(token!(Character, 'a')));
-        assert_eq!(token_iterator.next(), Some(token!(LinkClose, '}')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '*')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '/')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '_')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, ',')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '-')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '%')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Space, ' ')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Space, '\t')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(LineBreak, '\n')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(LinkOpen, '{')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Character, 'a')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(LinkClose, '}')));
         assert_eq!(token_iterator.next(), None);
     }
 }
