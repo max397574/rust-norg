@@ -69,7 +69,7 @@ where
 {
     let mut parsed_tokens: Vec<ParsedToken> = vec![];
     let mut basic_tokens = basic_tokens.peekable();
-    let line_counter: u32 = 0;
+    let mut line_counter: u32 = 0;
     let mut char_counter: u32 = 0;
 
     while let Some(basic_token) = basic_tokens.next() {
@@ -104,6 +104,28 @@ where
                     range: [start_position, end_position],
                     data: ParsedTokenData::Space,
                 });
+            }
+            BasicTokenType::LineBreak => {
+                char_counter = 0;
+                let start_position = Position::new(line_counter, char_counter);
+                if basic_tokens
+                    .next_if(|x| x.token_type == BasicTokenType::LineBreak)
+                    .is_some()
+                {
+                    line_counter += 2;
+                    let end_position = Position::new(line_counter, char_counter);
+                    parsed_tokens.push(ParsedToken {
+                        range: [start_position, end_position],
+                        data: ParsedTokenData::ParagraphBreak,
+                    });
+                } else {
+                    line_counter += 1;
+                    let end_position = Position::new(line_counter, char_counter);
+                    parsed_tokens.push(ParsedToken {
+                        range: [start_position, end_position],
+                        data: ParsedTokenData::SoftBreak,
+                    });
+                }
             }
             _ => unimplemented!(),
         }
@@ -171,5 +193,42 @@ mod tests {
             Some(parsed_token!([0, 12], [0, 15], ParsedTokenData::Space))
         );
         assert_eq!(token_iter.next(), None);
+    }
+
+    #[test]
+    fn linebreaks() {
+        let mut soft_break_iter = parse(tokenize("\n")).into_iter();
+        assert_eq!(
+            soft_break_iter.next(),
+            Some(parsed_token!([0, 0], [1, 0], ParsedTokenData::SoftBreak))
+        );
+        assert_eq!(soft_break_iter.next(), None);
+        drop(soft_break_iter);
+
+        let mut hard_break_iter = parse(tokenize("\n\n")).into_iter();
+        assert_eq!(
+            hard_break_iter.next(),
+            Some(parsed_token!(
+                [0, 0],
+                [2, 0],
+                ParsedTokenData::ParagraphBreak
+            ))
+        );
+        assert_eq!(hard_break_iter.next(), None);
+        drop(hard_break_iter);
+
+        let mut combined_break_iter = parse(tokenize("\n\n\n")).into_iter();
+        assert_eq!(
+            combined_break_iter.next(),
+            Some(parsed_token!(
+                [0, 0],
+                [2, 0],
+                ParsedTokenData::ParagraphBreak
+            ))
+        );
+        assert_eq!(
+            combined_break_iter.next(),
+            Some(parsed_token!([2, 0], [3, 0], ParsedTokenData::SoftBreak))
+        );
     }
 }
