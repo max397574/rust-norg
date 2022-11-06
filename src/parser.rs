@@ -2,8 +2,23 @@ use crate::tokenizer::{BasicToken, BasicTokenType};
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct ParsedToken {
-    range: [u32; 2],
+    range: [Position; 2],
     data: ParsedTokenData,
+}
+
+#[derive(Debug, Eq, PartialEq)]
+struct Position {
+    line_counter: u32,
+    char_counter: u32,
+}
+
+impl Position {
+    fn new(line_counter: u32, char_counter: u32) -> Self {
+        Self {
+            line_counter,
+            char_counter,
+        }
+    }
 }
 
 #[allow(dead_code)]
@@ -60,6 +75,7 @@ where
     while let Some(basic_token) = basic_tokens.next() {
         match basic_token.token_type {
             BasicTokenType::Character => {
+                let start_position = Position::new(line_counter, char_counter);
                 let mut word = String::new();
                 word.push(basic_token.char);
 
@@ -69,12 +85,24 @@ where
                     word.push(next_token.char);
                     char_counter += 1;
                 }
+                let end_position = Position::new(line_counter, char_counter);
                 parsed_tokens.push(ParsedToken {
-                    range: [line_counter, char_counter],
+                    range: [start_position, end_position],
                     data: ParsedTokenData::Word(word),
                 })
-            },
-            BasicTokenType::Space => todo!(),
+            }
+            BasicTokenType::Space => {
+                let start_position = Position::new(line_counter, char_counter);
+                while let Some(_) = basic_tokens.next_if(|x| x.token_type == BasicTokenType::Space)
+                {
+                    char_counter += 1;
+                }
+                let end_position = Position::new(line_counter, char_counter);
+                parsed_tokens.push(ParsedToken {
+                    range: [start_position, end_position],
+                    data: ParsedTokenData::Space,
+                });
+            }
             _ => unimplemented!(),
         }
         char_counter += 1;
@@ -88,9 +116,12 @@ mod tests {
     use crate::tokenizer::tokenize;
 
     macro_rules! parsed_token {
-        ($range:expr, $data:expr) => {
+        ($start:expr, $end:expr, $data:expr) => {
             ParsedToken {
-                range: $range,
+                range: [
+                    Position::new($start[0], $start[1]),
+                    Position::new($end[0], $end[1]),
+                ],
                 data: $data,
             }
         };
@@ -102,9 +133,40 @@ mod tests {
         assert_eq!(
             token_iter.next(),
             Some(parsed_token!(
+                [0, 0],
                 [0, 4],
                 ParsedTokenData::Word(String::from("neorg"))
             ))
+        );
+        assert_eq!(token_iter.next(), None);
+    }
+
+    #[test]
+    fn words_with_whitespaces() {
+        let mut token_iter = parse(tokenize("neorg parser    ")).into_iter();
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 0],
+                [0, 4],
+                ParsedTokenData::Word(String::from("neorg"))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!([0, 5], [0, 5], ParsedTokenData::Space))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 6],
+                [0, 11],
+                ParsedTokenData::Word(String::from("parser"))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!([0, 12], [0, 15], ParsedTokenData::Space))
         );
         assert_eq!(token_iter.next(), None);
     }
