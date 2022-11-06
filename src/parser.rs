@@ -162,6 +162,16 @@ where
                     });
                 }
             }
+            BasicTokenType::Special => {
+                let start_position = Position::new(line_counter, char_counter);
+                char_counter += 1;
+                let end_position = Position::new(line_counter, char_counter);
+                let attached_modifier_type = AttachedModifierType::new(basic_token.char);
+                parsed_tokens.push(ParsedToken {
+                    range: [start_position, end_position],
+                    data: ParsedTokenData::AttachedModifier(attached_modifier_type),
+                });
+            }
             _ => unimplemented!(),
         }
         char_counter += 1;
@@ -265,5 +275,99 @@ mod tests {
             combined_break_iter.next(),
             Some(parsed_token!([2, 0], [3, 0], ParsedTokenData::SoftBreak))
         );
+    }
+
+    #[test]
+    fn attached_modifier_recognition() {
+        let mut token_iter = parse(tokenize("*/_-|`^,$=+")).into_iter();
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 0],
+                [0, 1],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('*'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 2],
+                [0, 3],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('/'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 4],
+                [0, 5],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('_'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 6],
+                [0, 7],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('-'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 8],
+                [0, 9],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('|'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 10],
+                [0, 11],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('`'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 12],
+                [0, 13],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('^'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 14],
+                [0, 15],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new(','))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 16],
+                [0, 17],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('$'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 18],
+                [0, 19],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('='))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 20],
+                [0, 21],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('+'))
+            ))
+        );
+        assert_eq!(token_iter.next(), None);
     }
 }
