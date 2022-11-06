@@ -174,7 +174,6 @@ where
             }
             _ => unimplemented!(),
         }
-        char_counter += 1;
     }
     parsed_tokens
 }
@@ -223,19 +222,19 @@ mod tests {
         );
         assert_eq!(
             token_iter.next(),
-            Some(parsed_token!([0, 5], [0, 5], ParsedTokenData::Space))
+            Some(parsed_token!([0, 4], [0, 4], ParsedTokenData::Space))
         );
         assert_eq!(
             token_iter.next(),
             Some(parsed_token!(
-                [0, 6],
-                [0, 11],
+                [0, 4],
+                [0, 9],
                 ParsedTokenData::Word(String::from("parser"))
             ))
         );
         assert_eq!(
             token_iter.next(),
-            Some(parsed_token!([0, 12], [0, 15], ParsedTokenData::Space))
+            Some(parsed_token!([0, 9], [0, 12], ParsedTokenData::Space))
         );
         assert_eq!(token_iter.next(), None);
     }
@@ -291,9 +290,25 @@ mod tests {
         assert_eq!(
             token_iter.next(),
             Some(parsed_token!(
+                [0, 1],
+                [0, 2],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('/'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
                 [0, 2],
                 [0, 3],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new('/'))
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('_'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 3],
+                [0, 4],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('-'))
             ))
         );
         assert_eq!(
@@ -301,7 +316,15 @@ mod tests {
             Some(parsed_token!(
                 [0, 4],
                 [0, 5],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new('_'))
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('|'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 5],
+                [0, 6],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('`'))
             ))
         );
         assert_eq!(
@@ -309,7 +332,15 @@ mod tests {
             Some(parsed_token!(
                 [0, 6],
                 [0, 7],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new('-'))
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('^'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 7],
+                [0, 8],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new(','))
             ))
         );
         assert_eq!(
@@ -317,7 +348,15 @@ mod tests {
             Some(parsed_token!(
                 [0, 8],
                 [0, 9],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new('|'))
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('$'))
+            ))
+        );
+        assert_eq!(
+            token_iter.next(),
+            Some(parsed_token!(
+                [0, 9],
+                [0, 10],
+                ParsedTokenData::AttachedModifier(AttachedModifierType::new('='))
             ))
         );
         assert_eq!(
@@ -325,46 +364,6 @@ mod tests {
             Some(parsed_token!(
                 [0, 10],
                 [0, 11],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new('`'))
-            ))
-        );
-        assert_eq!(
-            token_iter.next(),
-            Some(parsed_token!(
-                [0, 12],
-                [0, 13],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new('^'))
-            ))
-        );
-        assert_eq!(
-            token_iter.next(),
-            Some(parsed_token!(
-                [0, 14],
-                [0, 15],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new(','))
-            ))
-        );
-        assert_eq!(
-            token_iter.next(),
-            Some(parsed_token!(
-                [0, 16],
-                [0, 17],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new('$'))
-            ))
-        );
-        assert_eq!(
-            token_iter.next(),
-            Some(parsed_token!(
-                [0, 18],
-                [0, 19],
-                ParsedTokenData::AttachedModifier(AttachedModifierType::new('='))
-            ))
-        );
-        assert_eq!(
-            token_iter.next(),
-            Some(parsed_token!(
-                [0, 20],
-                [0, 21],
                 ParsedTokenData::AttachedModifier(AttachedModifierType::new('+'))
             ))
         );
