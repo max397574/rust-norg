@@ -54,6 +54,8 @@ where
 {
     let mut parsed_tokens: Vec<ParsedToken> = vec![];
     let mut basic_tokens = basic_tokens.peekable();
+    let line_counter: u32 = 0;
+    let mut char_counter: u32 = 0;
 
     while let Some(basic_token) = basic_tokens.next() {
         match basic_token.token_type {
@@ -65,15 +67,17 @@ where
                     basic_tokens.next_if(|x| x.token_type == BasicTokenType::Character)
                 {
                     word.push(next_token.char);
+                    char_counter += 1;
                 }
                 parsed_tokens.push(ParsedToken {
-                    range: [0, (word.len() - 1) as u32],
+                    range: [line_counter, char_counter],
                     data: ParsedTokenData::Word(word),
                 })
             },
             BasicTokenType::Space => todo!(),
             _ => unimplemented!(),
         }
+        char_counter += 1;
     }
     parsed_tokens
 }
