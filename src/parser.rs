@@ -1,4 +1,5 @@
 use crate::tokenizer::{BasicToken, BasicTokenType};
+use std::convert::From;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct ParsedToken {
@@ -75,6 +76,24 @@ impl AttachedModifierType {
             '=' => Self::Variable,
             '+' => Self::Comment,
             _ => unreachable!("Tokenizer won't provide unrecognized character"),
+        }
+    }
+}
+
+impl From<AttachedModifierType> for char {
+    fn from(attached_modifier_type: AttachedModifierType) -> Self {
+        match attached_modifier_type {
+            AttachedModifierType::Bold => '*',
+            AttachedModifierType::Italic => '/',
+            AttachedModifierType::Underline => '_',
+            AttachedModifierType::Strikethrough => '-',
+            AttachedModifierType::Spoiler => '|',
+            AttachedModifierType::Verbatim => '`',
+            AttachedModifierType::Superscript => '^',
+            AttachedModifierType::Subscript => ',',
+            AttachedModifierType::Math => '$',
+            AttachedModifierType::Variable => '=',
+            AttachedModifierType::Comment => '+',
         }
     }
 }
