@@ -61,12 +61,10 @@ where
                 let mut word = String::new();
                 word.push(basic_token.char);
 
-                while let Some(next_token) = basic_tokens.peek() {
-                    if next_token.token_type == BasicTokenType::Character {
-                        word.push(basic_tokens.next().unwrap().char);
-                    } else {
-                        break;
-                    }
+                while let Some(next_token) =
+                    basic_tokens.next_if(|x| x.token_type == BasicTokenType::Character)
+                {
+                    word.push(next_token.char);
                 }
                 parsed_tokens.push(ParsedToken {
                     range: [0, (word.len() - 1) as u32],
