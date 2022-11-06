@@ -57,10 +57,33 @@ enum AttachedModifierType {
     Bold,
     Italic,
     Underline,
+    Strikethrough,
+    Spoiler,
+    Verbatim,
     Superscript,
     Subscript,
-    Strikethrough,
+    Math,
+    Variable,
     Comment,
+}
+
+impl AttachedModifierType {
+    fn new(special_char: char) -> Self {
+        match special_char {
+            '*' => Self::Bold,
+            '/' => Self::Italic,
+            '_' => Self::Underline,
+            '-' => Self::Strikethrough,
+            '|' => Self::Spoiler,
+            '`' => Self::Verbatim,
+            '^' => Self::Superscript,
+            ',' => Self::Subscript,
+            '$' => Self::Math,
+            '=' => Self::Variable,
+            '+' => Self::Comment,
+            _ => unreachable!("Tokenizer won't provide unrecognized character"),
+        }
+    }
 }
 
 pub fn parse<I>(basic_tokens: I) -> Vec<ParsedToken>

@@ -15,7 +15,7 @@ impl From<char> for BasicTokenType {
         match input_char {
             '\t' | ' ' => Self::Space,
             '\n' => Self::LineBreak,
-            '*' | '/' | '_' | ',' | '-' | '%' => Self::Special,
+            '*' | '/' | '_' | '-' | '|' | '`' | '^' | ',' | '$' | '=' | '+' => Self::Special,
             '{' => Self::LinkOpen,
             '}' => Self::LinkClose,
             _ => Self::Character,
@@ -57,13 +57,18 @@ mod tests {
 
     #[test]
     fn validate_tokenizer() {
-        let mut token_iterator = tokenize("*/_,-% \t\n{a}");
+        let mut token_iterator = tokenize("*/_-|`^,$=+ \t\n{a}");
         assert_eq!(token_iterator.next(), Some(basic_token!(Special, '*')));
         assert_eq!(token_iterator.next(), Some(basic_token!(Special, '/')));
         assert_eq!(token_iterator.next(), Some(basic_token!(Special, '_')));
-        assert_eq!(token_iterator.next(), Some(basic_token!(Special, ',')));
         assert_eq!(token_iterator.next(), Some(basic_token!(Special, '-')));
-        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '%')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '|')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '`')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '^')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, ',')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '$')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '=')));
+        assert_eq!(token_iterator.next(), Some(basic_token!(Special, '+')));
         assert_eq!(token_iterator.next(), Some(basic_token!(Space, ' ')));
         assert_eq!(token_iterator.next(), Some(basic_token!(Space, '\t')));
         assert_eq!(token_iterator.next(), Some(basic_token!(LineBreak, '\n')));
